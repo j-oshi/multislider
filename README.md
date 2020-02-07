@@ -11,3 +11,15 @@ The product modal/lightbox should display information on the product clicked on 
 Please fork this repository and commit your changes for review.
 
 Amend this Readme in your forked repo and use your commits to outline the component you have created and the decisions that you have made, including any information required for how to run your component. When complete please raise a Pull Request back into master branch for review.
+
+# Cloth slider
+
+Created an image slider and modal.
+
+Modal pops up when the slide price is clicked.
+
+Modal shows image slider.
+
+Html must be executed in a server to avoid CORS issue (live server).
+
+No time to make slider responsive.
