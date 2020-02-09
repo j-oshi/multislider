@@ -82,6 +82,33 @@
         display: flex;
       }
 
+      
+      #slider-container button {
+        transform: translate(0%, -50%);
+        -ms-transform: translate(-0%, -50%);
+        z-index: 100;
+        background-color: transparent;
+        border: none;
+        outline:none;
+      }
+
+      
+      #slider-container button:hover {
+        color:cadetblue;
+      }
+
+      #modal-button-left {
+        position: absolute;
+        top: 49%;
+        left: 0px;
+      }
+
+      #modal-button-right {
+        position: absolute;
+        top: 49%;
+        right: 0px;
+      }
+
       /* The Close Button */
       .close {
         color: #aaaaaa;
@@ -99,10 +126,17 @@
         cursor: pointer;
       }
 
+      #slider-container {
+        width: 300px;
+        height: 300px;
+        position: relative;
+      }
+
       #slider {
         width: 300px;
         height: 300px;
         display: inline-block;
+        position: relative;
         overflow: hidden;
         -webkit-overflow-scrolling: touch;
         scroll-snap-type: x mandatory;
@@ -112,7 +146,6 @@
         width: 300px;
         flex-shrink: 0;
         height: 100%;
-        background-color: red;
         scroll-behavior: smooth;
       }
 
@@ -127,6 +160,15 @@
         display: inline-block;
         position: relative;
         padding-left: 20px;
+      }
+
+      #slider-controller p {
+        margin-top: 5px;
+        font-size: 12px;
+      }
+
+      #slider-controller h6 {
+        margin-bottom: 5px;
       }
 
       #slider-controller a {
@@ -164,7 +206,15 @@
     <div id="myModal" class="modal">
       <!-- Modal content -->
       <div class="modal-content">
-        <div id="slider">
+        <div id="slider-container">
+          <div id="slider">
+          </div>
+          <button id="modal-button-left">
+            &#10094;
+          </button>
+          <button id="modal-button-right">
+            &#10095;
+          </button>
         </div>
         <div id="slider-controller">
           <span class="close">&times;</span>
