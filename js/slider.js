@@ -18,12 +18,12 @@
 
             let containerOffSet = containerWidth / containerChildren;
 
-            if (n === -1) {
+            if (n === -1 && x.scrollLeft < x.scrollLeftMax) {
                 warehouseCarousel.globals.slideOffset += containerOffSet;
                 x.scrollLeft = warehouseCarousel.globals.slideOffset;
             }
 
-            if (n === 1) {
+            if (n === 1 && x.scrollLeft !== 0) {
                 warehouseCarousel.globals.slideOffset -= containerOffSet;
                 x.scrollLeft = warehouseCarousel.globals.slideOffset;
             }
