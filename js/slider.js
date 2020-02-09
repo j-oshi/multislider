@@ -2,12 +2,15 @@
     let warehouseCarousel = {
         globals: {
             'slideOffset': 0,
+            'modelScroller': 0,
         },
 
         init() {
             warehouseCarousel.displayProduct();
             warehouseCarousel.scrollToLeft();
             warehouseCarousel.scrollToRight();
+            warehouseCarousel.slideModalLeft();
+            warehouseCarousel.slideModalRight();
         },
 
         showDivs(n) {
@@ -70,7 +73,6 @@
         },
 
         displayCard(cardArray) {
-            // console.log(cardArray.hits);
             let cardContainer = document.getElementById("product-container");
             let cards = cardArray.hits.map(card => {
                 if (card.image !== undefined) {
@@ -146,6 +148,44 @@
                     cardController.insertAdjacentHTML("afterbegin", `<h6 class="slide-title">${value.data[0].name}</h6><p class="slide-title">£${value.data[0].price}</p>`);
                 }
             }, url);
+        },
+
+        slideModal(n) {
+            let slides = Array.from(document.getElementsByClassName("slide-button"));
+            let scrollerArray = Array.from(slides).length;
+
+            if (n === 1) {
+                warehouseCarousel.globals.modelScroller += 1;
+                let l = warehouseCarousel.globals.modelScroller;
+                let scrollIndex = warehouseCarousel.globals.modelScroller;
+                if (scrollerArray >= l) {
+                    window.location.href = slides[l].href;
+                }
+            }
+
+            if (n === -1) {
+                if (warehouseCarousel.globals.modelScroller > 0) {
+                    warehouseCarousel.globals.modelScroller -= 1;
+                    let r = warehouseCarousel.globals.modelScroller;
+                    if (scrollerArray >= r && r >= 0) {
+                        window.location.href = slides[r].href;
+                    }
+                }
+            }
+        },
+
+        slideModalLeft() {
+            let scroller = document.getElementById("modal-button-left");
+            scroller.addEventListener('click', function () {
+                warehouseCarousel.slideModal(1);
+            });
+        },
+
+        slideModalRight() {
+            let scroller = document.getElementById("modal-button-right");
+            scroller.addEventListener('click', function () {
+                warehouseCarousel.slideModal(-1);
+            });
         },
     };
 
