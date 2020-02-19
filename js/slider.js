@@ -70,7 +70,7 @@
         },
 
         loadProductJSON(callback, url) {
-            var xobj = new XMLHttpRequest();
+            let xobj = new XMLHttpRequest();
             xobj.overrideMimeType("application/json");
 
             xobj.onreadystatechange = function () {
@@ -86,7 +86,7 @@
         },
 
         displayProduct() {
-            var url = "data/recommendations.json";
+            let url = "data/recommendations.json";
             multislide.loadProductJSON(function (response) {
                 if (response !== false) {
                     let value = JSON.parse(response);
@@ -146,9 +146,9 @@
             let master_id = n.substring(0, 6);
             const removeElements = (elms) => elms.forEach(el => el.remove());
             removeElements(document.querySelectorAll(".slide, .slide-button, .slide-title"));
-            var cardContainer = document.getElementById("slider");
-            var cardController = document.getElementById("slider-controller");
-            var url = "data/product.json";
+            let cardContainer = document.getElementById("slider");
+            let cardController = document.getElementById("slider-controller");
+            let url = "data/product.json";
             multislide.loadProductJSON(function (response) {
                 if (response !== false) {
                     let value = JSON.parse(response);
@@ -158,8 +158,8 @@
                         }
                     }).filter(products => products !== undefined);
 
-                    var cards = [];
-                    var cardLinks = [];
+                    let cards = [];
+                    let cardLinks = [];
                     product[0].image_groups.map(pic => {
                         pic.images.map((img, index) => {
                             cards.push(`<div class="slide" id="slide-${index}"><img src="${img.link}" alt="${img.alt}" style="width:100%"></div>`);
