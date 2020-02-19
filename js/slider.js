@@ -1,49 +1,72 @@
 (function () {
-    let warehouseCarousel = {
+    let multislide = {
         globals: {
+            'stylesheet': 'css/multislider.css',
+            'slideContainer': 'main-slide-container',
             'slideOffset': 0,
             'modelScroller': 0,
+            'carousel': false,
         },
 
         init() {
-            warehouseCarousel.displayProduct();
-            warehouseCarousel.scrollToLeft();
-            warehouseCarousel.scrollToRight();
-            warehouseCarousel.slideModalLeft();
-            warehouseCarousel.slideModalRight();
+            multislide.loadStyleSheet();
+            multislide.displayProduct();
+            multislide.scrollToLeft();
+            multislide.scrollToRight();
+            multislide.slideModalLeft();
+            multislide.slideModalRight();
+            multislide.carouselEvent();
         },
 
-        showDivs(n) {
-            let i;
-            let x = document.getElementById("product-container");
+        loadStyleSheet() {
+            // Check if stylesheet exist before loading
+            let styleSheet = [...document.querySelectorAll("link")];
+            let linkArray = styleSheet.map(style => style.href.includes("")).filter(linkExist => linkExist === true);
+            if (linkArray.length < 1) {
+                let styleTag = document.createElement('link');
+                styleTag.type = 'text/css';
+                styleTag.rel = 'stylesheet';
+                styleTag.href = multislide.globals.stylesheet;
+                document.getElementsByTagName('head')[0].appendChild(styleTag);
+            }
+        },
+
+        slideDisplay(n) {
+            let x = document.getElementById(multislide.globals.slideContainer);
             let containerWidth = x.scrollWidth;
-            let containerChildren = Array.from(x.children).length - 2;
+            let containerChildren = Array.from(x.children).length;
 
             let containerOffSet = containerWidth / containerChildren;
 
             if (n === -1 && x.scrollLeft < x.scrollLeftMax) {
-                warehouseCarousel.globals.slideOffset += containerOffSet;
-                x.scrollLeft = warehouseCarousel.globals.slideOffset;
+                multislide.globals.slideOffset += containerOffSet;
+                x.scrollLeft = multislide.globals.slideOffset;
             }
 
             if (n === 1 && x.scrollLeft !== 0) {
-                warehouseCarousel.globals.slideOffset -= containerOffSet;
-                x.scrollLeft = warehouseCarousel.globals.slideOffset;
+                multislide.globals.slideOffset -= containerOffSet;
+                x.scrollLeft = multislide.globals.slideOffset;
             }
         },
 
         scrollToLeft() {
             let x = document.getElementById("button-left");
             x.addEventListener('click', function () {
-                warehouseCarousel.showDivs(-1);
+                multislide.slideDisplay(1);
             });
         },
 
         scrollToRight() {
             let x = document.getElementById("button-right");
             x.addEventListener('click', function () {
-                warehouseCarousel.showDivs(1);
+                multislide.slideDisplay(-1);
             });
+        },
+
+        carouselEvent() {
+            if (multislide.globals.carousel) {
+                setInterval(function() {multislide.slideDisplay(-1)}, 6000);
+            }
         },
 
         loadProductJSON(callback, url) {
@@ -64,16 +87,16 @@
 
         displayProduct() {
             var url = "data/recommendations.json";
-            warehouseCarousel.loadProductJSON(function (response) {
+            multislide.loadProductJSON(function (response) {
                 if (response !== false) {
                     let value = JSON.parse(response);
-                    warehouseCarousel.displayCard(value);
+                    multislide.displayCard(value);
                 }
             }, url);
         },
 
         displayCard(cardArray) {
-            let cardContainer = document.getElementById("product-container");
+            let cardContainer = document.getElementById(multislide.globals.slideContainer);
             let cards = cardArray.hits.map(card => {
                 if (card.image !== undefined) {
                     return `<div class="card">
@@ -86,8 +109,8 @@
                 }
             });
             cardContainer.insertAdjacentHTML("afterbegin", cards.join(""));
-            warehouseCarousel.showDivs(warehouseCarousel.globals.slideIndex);
-            warehouseCarousel.modalControl();
+            multislide.slideDisplay(multislide.globals.slideIndex);
+            multislide.modalControl();
         },
 
         modalControl() {
@@ -99,7 +122,7 @@
             p.map(eachP => {
                 eachP.addEventListener('click', function () {
                     modal.style.display = "block";
-                    warehouseCarousel.displayModalProduct(this.dataset.id);
+                    multislide.displayModalProduct(this.dataset.id);
                 });
             });
 
@@ -122,11 +145,11 @@
         displayModalProduct(n) {
             let master_id = n.substring(0, 6);
             const removeElements = (elms) => elms.forEach(el => el.remove());
-            removeElements( document.querySelectorAll(".slide, .slide-button, .slide-title") );
+            removeElements(document.querySelectorAll(".slide, .slide-button, .slide-title"));
             var cardContainer = document.getElementById("slider");
             var cardController = document.getElementById("slider-controller");
             var url = "data/product.json";
-            warehouseCarousel.loadProductJSON(function (response) {
+            multislide.loadProductJSON(function (response) {
                 if (response !== false) {
                     let value = JSON.parse(response);
                     let product = value.data.map(productData => {
@@ -138,7 +161,7 @@
                     var cards = [];
                     var cardLinks = [];
                     product[0].image_groups.map(pic => {
-                        pic.images.map( (img, index) => {
+                        pic.images.map((img, index) => {
                             cards.push(`<div class="slide" id="slide-${index}"><img src="${img.link}" alt="${img.alt}" style="width:100%"></div>`);
                             cardLinks.push(`<a class="slide-button" href="#slide-${index}">${index}</a>`);
                         });
@@ -155,18 +178,18 @@
             let scrollerArray = Array.from(slides).length;
 
             if (n === 1) {
-                warehouseCarousel.globals.modelScroller += 1;
-                let l = warehouseCarousel.globals.modelScroller;
-                let scrollIndex = warehouseCarousel.globals.modelScroller;
+                multislide.globals.modelScroller += 1;
+                let l = multislide.globals.modelScroller;
+                let scrollIndex = multislide.globals.modelScroller;
                 if (scrollerArray >= l) {
                     window.location.href = slides[l].href;
                 }
             }
 
             if (n === -1) {
-                if (warehouseCarousel.globals.modelScroller > 0) {
-                    warehouseCarousel.globals.modelScroller -= 1;
-                    let r = warehouseCarousel.globals.modelScroller;
+                if (multislide.globals.modelScroller > 0) {
+                    multislide.globals.modelScroller -= 1;
+                    let r = multislide.globals.modelScroller;
                     if (scrollerArray >= r && r >= 0) {
                         window.location.href = slides[r].href;
                     }
@@ -177,17 +200,17 @@
         slideModalLeft() {
             let scroller = document.getElementById("modal-button-left");
             scroller.addEventListener('click', function () {
-                warehouseCarousel.slideModal(1);
+                multislide.slideModal(1);
             });
         },
 
         slideModalRight() {
             let scroller = document.getElementById("modal-button-right");
             scroller.addEventListener('click', function () {
-                warehouseCarousel.slideModal(-1);
+                multislide.slideModal(-1);
             });
         },
     };
 
-    warehouseCarousel.init();
+    multislide.init();
 })();
