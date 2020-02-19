@@ -200,14 +200,14 @@
         slideModalLeft() {
             let scroller = document.getElementById("modal-button-left");
             scroller.addEventListener('click', function () {
-                multislide.slideModal(1);
+                multislide.slideModal(-1);
             });
         },
 
         slideModalRight() {
             let scroller = document.getElementById("modal-button-right");
             scroller.addEventListener('click', function () {
-                multislide.slideModal(-1);
+                multislide.slideModal(1);
             });
         },
     };
