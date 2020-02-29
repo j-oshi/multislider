@@ -131,9 +131,17 @@
             multislide.modalControl();
         },
 
+        setModalValue(n) {
+            multislide.globals.modelScroller += n;
+        },
+
+        getModalValue() {
+            return multislide.globals.modelScroller;
+        },
+
         modalControl() {
             // Get the modal
-            var modal = document.getElementById("myModal");
+            let modal = document.getElementById("myModal");
 
             // Click on price that opens the modal
             let p = Array.from(document.getElementsByClassName("popUp"));
@@ -145,7 +153,7 @@
             });
 
             // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
+            let span = document.getElementsByClassName("close")[0];
 
             // When the user clicks on <span> (x), close the modal
             span.onclick = function () {
@@ -178,11 +186,11 @@
 
                     let cards = [];
                     let cardLinks = [];
-                    product[0].image_groups.map(pic => {
-                        pic.images.map((img, index) => {
-                            cards.push(`<div class="slide" id="slide-${index}"><img src="${img.link}" alt="${img.alt}" style="width:100%"></div>`);
-                            cardLinks.push(`<a class="slide-button" href="#slide-${index}">${index}</a>`);
-                        });
+                    let modalImges = [];
+                    product[0].image_groups.map(pic => pic.images.map(img => modalImges.push(img)));
+                    modalImges.map((img, index) => {
+                        cards.push(`<div class="slide" id="slide-${index}"><img src="${img.link}" alt="${img.alt}" style="width:100%"></div>`);
+                        cardLinks.push(`<a class="slide-button" href="#slide-${index}">${index}</a>`);
                     });
                     cardContainer.insertAdjacentHTML("afterbegin", cards.join(""));
                     cardController.insertAdjacentHTML("afterbegin", cardLinks.join(""));
@@ -193,21 +201,19 @@
 
         slideModal(n) {
             let slides = Array.from(document.getElementsByClassName("slide-button"));
-            let scrollerArray = Array.from(slides).length;
-
+            let scrollerArray = Array.from(slides).length - 1;
             if (n === 1) {
-                multislide.globals.modelScroller += 1;
-                let l = multislide.globals.modelScroller;
-                let scrollIndex = multislide.globals.modelScroller;
+                multislide.setModalValue(1);
+                let l = multislide.getModalValue();
                 if (scrollerArray >= l) {
                     window.location.href = slides[l].href;
                 }
             }
 
             if (n === -1) {
-                if (multislide.globals.modelScroller > 0) {
-                    multislide.globals.modelScroller -= 1;
-                    let r = multislide.globals.modelScroller;
+                if (multislide.getModalValue() > 0) {
+                    multislide.setModalValue(-1);
+                    let r = multislide.getModalValue();
                     if (scrollerArray >= r && r >= 0) {
                         window.location.href = slides[r].href;
                     }

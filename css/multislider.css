@@ -8,6 +8,7 @@
   width: 100%;
   overflow-x: hidden;
   height: 400px;
+  scroll-behavior: smooth;
 }
 
 .slide-title-center {
