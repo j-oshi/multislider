@@ -31,22 +31,40 @@
             }
         },
 
+        setContainerValue(n) {
+            multislide.globals.slideOffset += n;
+        },
+
+        getContainerValue() {
+            return multislide.globals.slideOffset;
+        },
+
         slideDisplay(n) {
             let x = document.getElementById(multislide.globals.slideContainer);
             let containerWidth = x.scrollWidth;
             let containerChildren = Array.from(x.children).length;
 
             let containerOffSet = containerWidth / containerChildren;
-
-            if (n === -1 && x.scrollLeft < x.scrollLeftMax) {
-                multislide.globals.slideOffset += containerOffSet;
-                x.scrollLeft = multislide.globals.slideOffset;
+            let scrollLeftmaxIE = multislide.calculateScrollLeftMax(x);
+            
+            if (n === -1 && x.scrollLeft < (x.scrollLeftMax || scrollLeftmaxIE)) {
+                multislide.setContainerValue(containerOffSet);
+                x.scrollLeft = multislide.getContainerValue();
             }
 
             if (n === 1 && x.scrollLeft !== 0) {
-                multislide.globals.slideOffset -= containerOffSet;
-                x.scrollLeft = multislide.globals.slideOffset;
+                multislide.setContainerValue(-containerOffSet);
+                x.scrollLeft = multislide.getContainerValue();
             }
+        },
+
+        // Offset fix for i.e
+        calculateScrollLeftMax(node) {
+            let containerChildren = [...node.children];
+            let containerLength = containerChildren.reduce((acc, child) => acc + child.clientWidth, 0);
+            let windowWidth = window.innerWidth;
+
+            return containerLength - windowWidth;
         },
 
         scrollToLeft() {
