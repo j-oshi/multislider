@@ -5,7 +5,8 @@
             'slideContainer': 'main-slide-container',
             'slideOffset': 0,
             'modelScroller': 0,
-            'carousel': false,
+            'carousel': true,
+            'carouselTransitionTime': 2000,
         },
 
         init() {
@@ -39,6 +40,10 @@
             return multislide.globals.slideOffset;
         },
 
+        resetContainerValue() {
+            multislide.globals.slideOffset = 0;
+        },  
+
         slideDisplay(n) {
             let x = document.getElementById(multislide.globals.slideContainer);
             let containerWidth = x.scrollWidth;
@@ -58,12 +63,15 @@
             }
         },
 
+        resetScrolling(n) {
+            multislide.setContainerValue(n);
+        },
+
         // Offset fix for i.e
         calculateScrollLeftMax(node) {
             let containerChildren = [...node.children];
             let containerLength = containerChildren.reduce((acc, child) => acc + child.clientWidth, 0);
             let windowWidth = window.innerWidth;
-
             return containerLength - windowWidth;
         },
 
@@ -83,11 +91,22 @@
 
         carouselEvent() {
             if (multislide.globals.carousel) {
-                setInterval(function() {multislide.slideDisplay(-1)}, 6000);
+                let x = document.getElementById(multislide.globals.slideContainer);
+
+                setInterval(function() {
+                    multislide.slideDisplay(-1)
+                    let scrollLeftmaxIE = multislide.calculateScrollLeftMax(x);
+                    let scroll = x.scrollLeftMax || scrollLeftmaxIE;
+                    if (x.scrollLeft >= scroll) {
+                        multislide.resetContainerValue();
+                        x.scrollLeft = 0;
+                    }
+                }, multislide.globals.carouselTransitionTime);
+
             }
         },
 
-        loadProductJSON(callback, url) {
+        loadProductJSON(callback, url) { 
             let xobj = new XMLHttpRequest();
             xobj.overrideMimeType("application/json");
 
