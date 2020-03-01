@@ -7,20 +7,23 @@
             'modelScroller': 0,
             'carousel': true,
             'carouselTransitionTime': 2000,
+            'timer': null,
         },
 
         init() {
             multislide.loadStyleSheet();
+            multislide.loadFixScript();
             multislide.displayProduct();
             multislide.scrollToLeft();
             multislide.scrollToRight();
             multislide.slideModalLeft();
             multislide.slideModalRight();
             multislide.carouselEvent();
+            multislide.onCarouselHover();
         },
 
         loadStyleSheet() {
-            // Check if stylesheet exist before loading
+            // Check if stylesheet exist before loading script
             let styleSheet = [...document.querySelectorAll("link")];
             let linkArray = styleSheet.map(style => style.href.includes("")).filter(linkExist => linkExist === true);
             if (linkArray.length < 1) {
@@ -32,8 +35,18 @@
             }
         },
 
-        setContainerValue(n) {
-            multislide.globals.slideOffset += n;
+        loadFixScript() {
+            // load script if scroll function does not exist
+            let x = document.getElementById(multislide.globals.slideContainer);
+            if (x.scrollLeftMax === undefined) {
+                let scriptTag = document.createElement('script');
+                scriptTag.setAttribute('src', 'js/iefix.js');
+                document.getElementsByTagName('head')[0].appendChild(scriptTag);
+            }
+        },        
+
+        setContainerValue(value) {
+            multislide.globals.slideOffset += value;
         },
 
         getContainerValue() {
@@ -50,9 +63,8 @@
             let containerChildren = Array.from(x.children).length;
 
             let containerOffSet = containerWidth / containerChildren;
-            let scrollLeftmaxIE = multislide.calculateScrollLeftMax(x);
-            
-            if (n === -1 && x.scrollLeft < (x.scrollLeftMax || scrollLeftmaxIE)) {
+
+            if (n === -1 && x.scrollLeft < x.scrollLeftMax) {
                 multislide.setContainerValue(containerOffSet);
                 x.scrollLeft = multislide.getContainerValue();
             }
@@ -65,14 +77,6 @@
 
         resetScrolling(n) {
             multislide.setContainerValue(n);
-        },
-
-        // Offset fix for i.e
-        calculateScrollLeftMax(node) {
-            let containerChildren = [...node.children];
-            let containerLength = containerChildren.reduce((acc, child) => acc + child.clientWidth, 0);
-            let windowWidth = window.innerWidth;
-            return containerLength - windowWidth;
         },
 
         scrollToLeft() {
@@ -93,17 +97,28 @@
             if (multislide.globals.carousel) {
                 let x = document.getElementById(multislide.globals.slideContainer);
 
-                setInterval(function() {
-                    multislide.slideDisplay(-1)
-                    let scrollLeftmaxIE = multislide.calculateScrollLeftMax(x);
-                    let scroll = x.scrollLeftMax || scrollLeftmaxIE;
-                    if (x.scrollLeft >= scroll) {
+                multislide.globals.timer = setInterval(function() {
+                    multislide.slideDisplay(-1);
+                    if (x.scrollLeft >= x.scrollLeftMax) {
                         multislide.resetContainerValue();
                         x.scrollLeft = 0;
                     }
                 }, multislide.globals.carouselTransitionTime);
 
             }
+        },
+
+        onCarouselHover() {
+            let buttons = document.querySelectorAll(".arrow");
+            [...buttons].forEach(button => {
+                button.addEventListener('mouseover', function () {
+                    clearInterval(multislide.globals.timer);
+                });
+                button.addEventListener('mouseout', function () {
+                    multislide.carouselEvent();
+                });
+            })
+
         },
 
         loadProductJSON(callback, url) { 
