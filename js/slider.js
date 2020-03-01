@@ -7,6 +7,7 @@
             'modelScroller': 0,
             'carousel': true,
             'carouselTransitionTime': 2000,
+            'timer': null,
         },
 
         init() {
@@ -17,6 +18,7 @@
             multislide.slideModalLeft();
             multislide.slideModalRight();
             multislide.carouselEvent();
+            multislide.onCarouselHover();
         },
 
         loadStyleSheet() {
@@ -93,7 +95,7 @@
             if (multislide.globals.carousel) {
                 let x = document.getElementById(multislide.globals.slideContainer);
 
-                setInterval(function() {
+                multislide.globals.timer = setInterval(function() {
                     multislide.slideDisplay(-1)
                     let scrollLeftmaxIE = multislide.calculateScrollLeftMax(x);
                     let scroll = x.scrollLeftMax || scrollLeftmaxIE;
@@ -104,6 +106,19 @@
                 }, multislide.globals.carouselTransitionTime);
 
             }
+        },
+
+        onCarouselHover() {
+            let buttons = document.querySelectorAll(".arrow");
+            [...buttons].forEach(button => {
+                button.addEventListener('mouseover', function () {
+                    clearInterval(multislide.globals.timer);
+                });
+                button.addEventListener('mouseout', function () {
+                    multislide.carouselEvent();
+                });
+            })
+
         },
 
         loadProductJSON(callback, url) { 
