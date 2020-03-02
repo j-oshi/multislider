@@ -45,15 +45,15 @@
             }
         },        
 
-        setContainerValue(value) {
+        setScrollOffset(value) {
             multislide.globals.slideOffset += value;
         },
 
-        getContainerValue() {
+        getScrollOffset() {
             return multislide.globals.slideOffset;
         },
 
-        resetContainerValue() {
+        resetScrollOffset() {
             multislide.globals.slideOffset = 0;
         },  
 
@@ -65,18 +65,14 @@
             let containerOffSet = containerWidth / containerChildren;
 
             if (n === -1 && x.scrollLeft < x.scrollLeftMax) {
-                multislide.setContainerValue(containerOffSet);
-                x.scrollLeft = multislide.getContainerValue();
+                multislide.setScrollOffset(containerOffSet);
+                x.scrollLeft = multislide.getScrollOffset();
             }
 
             if (n === 1 && x.scrollLeft !== 0) {
-                multislide.setContainerValue(-containerOffSet);
-                x.scrollLeft = multislide.getContainerValue();
+                multislide.setScrollOffset(-containerOffSet);
+                x.scrollLeft = multislide.getScrollOffset();
             }
-        },
-
-        resetScrolling(n) {
-            multislide.setContainerValue(n);
         },
 
         scrollToLeft() {
@@ -100,7 +96,7 @@
                 multislide.globals.timer = setInterval(function() {
                     multislide.slideDisplay(-1);
                     if (x.scrollLeft >= x.scrollLeftMax) {
-                        multislide.resetContainerValue();
+                        multislide.resetScrollOffset();
                         x.scrollLeft = 0;
                     }
                 }, multislide.globals.carouselTransitionTime);
